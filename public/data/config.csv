@@ -1,0 +1,10 @@
+Clé,Valeur,Explication
+titre,Portugal,Grand titre en haut de l'app
+dates,12 – 21 juillet 2025,Ligne sous le titre
+sous_titre,Lisbonne · Porto · Douro,Facultatif
+image_fond,,Adresse d'une image de fond (vide = image par défaut)
+image_destination,,Image du bandeau Destination (vide = par défaut)
+image_transport,,Image du bandeau Transport (vide = par défaut)
+image_agenda,,Image du bandeau Agenda (vide = par défaut)
+image_infos,,Image du bandeau Infos pratiques (vide = par défaut)
+image_contacts,,Image du bandeau Contacts (vide = par défaut)
