@@ -17,8 +17,8 @@ const parseCsv = (csv: string): Row[] => {
   return data.filter((row) => Object.values(row).some((v) => v));
 };
 
-const sheetUrl = (tab: string) =>
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}`;
+const sheetUrl = (id: string, tab: string) =>
+  `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}`;
 
 const localUrl = (tab: string) => `${import.meta.env.BASE_URL}data/${tab.toLowerCase()}.csv`;
 
@@ -26,10 +26,10 @@ const localUrl = (tab: string) => `${import.meta.env.BASE_URL}data/${tab.toLower
  * Lit un onglet. `mustHave` = une colonne qui doit exister : si Google renvoie
  * un autre onglet (cas d'un nom d'onglet mal orthographié), on le détecte.
  */
-async function readTab(tab: string, mustHave: string): Promise<{ rows: Row[]; from: 'sheet' | 'local' }> {
-  if (SHEET_ID) {
+async function readTab(sheetId: string, tab: string, mustHave: string): Promise<{ rows: Row[]; from: 'sheet' | 'local' }> {
+  if (sheetId) {
     try {
-      const res = await fetch(sheetUrl(tab));
+      const res = await fetch(sheetUrl(sheetId, tab));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const rows = parseCsv(await res.text());
       const headers = rows.length ? Object.keys(rows[0]) : [];
@@ -50,14 +50,14 @@ async function readTab(tab: string, mustHave: string): Promise<{ rows: Row[]; fr
   }
 }
 
-export async function loadTrip(): Promise<TripData> {
+export async function loadTrip(sheetId = SHEET_ID): Promise<TripData> {
   const [config, destination, transport, agenda, infos, contacts] = await Promise.all([
-    readTab(TABS.config, 'cle'),
-    readTab(TABS.destination, 'rubrique'),
-    readTab(TABS.transport, 'rubrique'),
-    readTab(TABS.agenda, 'jour'),
-    readTab(TABS.infos, 'titre'),
-    readTab(TABS.contacts, 'nom'),
+    readTab(sheetId, TABS.config, 'cle'),
+    readTab(sheetId, TABS.destination, 'rubrique'),
+    readTab(sheetId, TABS.transport, 'rubrique'),
+    readTab(sheetId, TABS.agenda, 'jour'),
+    readTab(sheetId, TABS.infos, 'titre'),
+    readTab(sheetId, TABS.contacts, 'nom'),
   ]);
 
   const all = [config, destination, transport, agenda, infos, contacts];

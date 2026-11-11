@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { SHEET_ID } from './config';
 import { loadTrip } from './data/sheets';
 import type { TripData } from './data/types';
+import { SheetLink } from './components/SheetLink';
 import { Tile } from './components/Tile';
 import { Destination } from './components/sections/Destination';
 import { Transport } from './components/sections/Transport';
@@ -9,14 +11,47 @@ import { Infos } from './components/sections/Infos';
 import { Contacts } from './components/sections/Contacts';
 
 const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.jpg`;
+const SHEET_KEY = 'trip.sheetId';
+
+const storedSheetId = () => {
+  try {
+    return localStorage.getItem(SHEET_KEY) ?? '';
+  } catch {
+    return '';
+  }
+};
 
 export default function App() {
+  const [customId, setCustomId] = useState(storedSheetId);
   const [trip, setTrip] = useState<TripData | null>(null);
   const [error, setError] = useState(false);
+  const sheetId = customId || SHEET_ID;
+
+  const chooseSheet = (id: string) => {
+    setCustomId(id);
+    try {
+      if (id) localStorage.setItem(SHEET_KEY, id);
+      else localStorage.removeItem(SHEET_KEY);
+    } catch {
+      /* navigation privée : le choix reste valable pour cette visite */
+    }
+  };
 
   useEffect(() => {
-    loadTrip().then(setTrip).catch(() => setError(true));
-  }, []);
+    let alive = true;
+    setTrip(null);
+    setError(false);
+    loadTrip(sheetId)
+      .then((data) => {
+        if (alive) setTrip(data);
+      })
+      .catch(() => {
+        if (alive) setError(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [sheetId]);
 
   // Une image du Sheet (onglet Config) remplace l'image par défaut
   const c = trip?.config ?? {};
@@ -25,6 +60,7 @@ export default function App() {
 
   return (
     <div className="page" style={{ backgroundImage: `url("${pick('image_fond', 'fond')}")` }}>
+      <SheetLink sheetId={sheetId} custom={Boolean(customId)} onChange={chooseSheet} />
       <main className="wrap">
         <header className="hero">
           <h1>{trip ? c.titre || 'Mon voyage' : 'Chargement…'}</h1>
@@ -57,7 +93,7 @@ export default function App() {
         {trip && trip.source !== 'sheet' && (
           <p className="source">
             {trip.source === 'local'
-              ? 'Données locales (public/data). Renseignez SHEET_ID dans src/config.ts pour lire le Google Sheet.'
+              ? 'Données locales (public/data). Collez le lien du Google Sheet avec l’icône en haut à droite.'
               : 'Certains onglets du Google Sheet sont introuvables : données locales utilisées pour ceux-là.'}
           </p>
         )}

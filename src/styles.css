@@ -42,6 +42,58 @@ a { color: var(--accent); }
   padding: calc(env(safe-area-inset-top, 0px) + 2.5rem) 1rem calc(env(safe-area-inset-bottom, 0px) + 3rem);
 }
 
+/* Lien du Google Sheet, en haut à droite */
+.sheet-link { position: fixed; z-index: 20; top: calc(env(safe-area-inset-top, 0px) + 0.7rem); right: 0.7rem; }
+.sheet-btn {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(241, 237, 228, 0.2);
+  border-radius: 999px;
+  background: rgba(15, 26, 28, 0.72);
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.sheet-btn.is-custom,
+.sheet-btn[aria-expanded='true'] { color: var(--accent); border-color: var(--accent); }
+.sheet-panel {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 1.4rem));
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.sheet-panel label { display: block; margin-bottom: 0.4rem; font-size: 0.92rem; font-weight: 600; }
+.sheet-panel input {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--text);
+}
+.sheet-panel input[aria-invalid='true'] { border-color: #e07a5f; }
+.sheet-hint, .sheet-error { margin: 0.45rem 0 0; font-size: 0.82rem; line-height: 1.35; }
+.sheet-hint { color: var(--muted); }
+.sheet-download { display: inline-block; margin-top: 0.55rem; color: var(--accent); font-size: 0.88rem; font-weight: 600; text-decoration: none; }
+.sheet-error { color: #e07a5f; }
+.sheet-actions { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.75rem; }
+.sheet-save, .sheet-clear {
+  padding: 0.4rem 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.sheet-save { background: var(--accent); color: var(--ink); font-weight: 600; }
+.sheet-clear { background: transparent; color: var(--muted); }
+
 /* En-tête */
 .hero { padding: 1.5rem 0.25rem 2rem; }
 .hero h1 {

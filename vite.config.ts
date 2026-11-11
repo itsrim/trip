@@ -27,7 +27,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico,csv}'],
+        globPatterns: ['**/*.{js,css,html,png,jpg,svg,ico,csv,xlsx}'],
         runtimeCaching: [
           {
             // Données Google Sheets : on essaie le réseau, sinon la dernière version en cache (hors-ligne)
